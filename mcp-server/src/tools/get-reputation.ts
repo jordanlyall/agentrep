@@ -1,5 +1,5 @@
 import { ethers } from "ethers";
-import { getIdentityRegistry, getReputationRegistry, getProvider } from "../lib/contracts.js";
+import { getIdentityRegistry, getReputationRegistry, getProvider, DEPLOY_BLOCK } from "../lib/contracts.js";
 import { computeTrustScore } from "../lib/scoring.js";
 
 export async function getReputation(agentIdOrAddress: string) {
@@ -13,7 +13,7 @@ export async function getReputation(agentIdOrAddress: string) {
   if (agentIdOrAddress.startsWith("0x")) {
     agentAddress = agentIdOrAddress;
     const filter = identityRegistry.filters.Registered(null, null, agentAddress);
-    const events = await identityRegistry.queryFilter(filter);
+    const events = await identityRegistry.queryFilter(filter, DEPLOY_BLOCK);
     if (events.length === 0) return { error: "Agent not found" };
     agentId = Number((events[0] as ethers.EventLog).args[0]);
   } else {

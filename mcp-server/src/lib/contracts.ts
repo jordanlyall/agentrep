@@ -1,5 +1,8 @@
 import { ethers } from "ethers";
 
+// Block number when contracts were deployed (used for event queries)
+export const DEPLOY_BLOCK = parseInt(process.env.DEPLOY_BLOCK || "38924000");
+
 const IDENTITY_ABI = [
   "function register(string agentURI) external returns (uint256)",
   "function setAgentURI(uint256 agentId, string newURI) external",

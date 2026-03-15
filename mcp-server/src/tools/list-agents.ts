@@ -1,12 +1,12 @@
 import { ethers } from "ethers";
-import { getIdentityRegistry, getProvider } from "../lib/contracts.js";
+import { getIdentityRegistry, getProvider, DEPLOY_BLOCK } from "../lib/contracts.js";
 
 export async function listAgents(page: number = 1, limit: number = 20) {
   const provider = getProvider();
   const registry = getIdentityRegistry(provider);
 
   const filter = registry.filters.Registered();
-  const events = await registry.queryFilter(filter);
+  const events = await registry.queryFilter(filter, DEPLOY_BLOCK);
 
   const total = events.length;
   const start = (page - 1) * limit;
