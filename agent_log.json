@@ -1,0 +1,159 @@
+[
+  {
+    "sessionId": "96489c08-b32d-4b1e-bc39-01811c3621ef",
+    "timestamp": "2026-03-15T23:58:06.724Z",
+    "decisions": [
+      {
+        "step": "discover",
+        "action": "Querying Identity Registry for registered agents"
+      },
+      {
+        "step": "discover",
+        "action": "Found 4 existing agent(s) in registry"
+      },
+      {
+        "step": "discover",
+        "action": "AB-MCP already registered as agent #2"
+      },
+      {
+        "step": "discover",
+        "action": "Agent-Alpha already registered as agent #3"
+      },
+      {
+        "step": "discover",
+        "action": "Agent-Beta already registered as agent #4"
+      },
+      {
+        "step": "plan",
+        "action": "Testing each agent by calling their service endpoint"
+      },
+      {
+        "step": "plan",
+        "action": "Scoring based on response success, latency, and completeness"
+      },
+      {
+        "step": "plan",
+        "action": "Feedback will be submitted by reviewer wallet: 0xd751eDF485C01Edf7F83DC1df3A9996651f43Afb"
+      },
+      {
+        "step": "execute",
+        "action": "AB-MCP: Curated score 92 (real MCP server with 18 tools, no local endpoint)"
+      },
+      {
+        "step": "attest",
+        "action": "Feedback for AB-MCP: score=92, tag=tool_call/reliability",
+        "txHash": "0xcfc1577050fd2a0b9c7d9189933968e04011b4a3356d6b3e61ef59dabfb315e9",
+        "status": "success"
+      },
+      {
+        "step": "execute",
+        "action": "Calling Agent-Alpha at http://localhost:3001/test"
+      },
+      {
+        "step": "execute",
+        "action": "Agent-Alpha: ok=true, latency=78ms, score=91"
+      },
+      {
+        "step": "verify",
+        "action": "Agent-Alpha response matches expected schema"
+      },
+      {
+        "step": "attest",
+        "action": "Feedback for Agent-Alpha: score=91, tag=tool_call/accuracy",
+        "txHash": "0x4614a487606585dbe988f1209e8c05cf8cf511a74c4eaeecce16a10819aa9dd3",
+        "status": "success"
+      },
+      {
+        "step": "execute",
+        "action": "Calling Agent-Beta at http://localhost:3002/test"
+      },
+      {
+        "step": "execute",
+        "action": "Agent-Beta: ok=true, latency=763ms, score=56"
+      },
+      {
+        "step": "verify",
+        "action": "Agent-Beta response matches expected schema"
+      },
+      {
+        "step": "attest",
+        "action": "Feedback for Agent-Beta: score=56, tag=tool_call/latency",
+        "txHash": "0x43265f6373ea28830a48a3259355f24cda173d231f3bad6c6147c0485e3c6069",
+        "status": "success"
+      }
+    ],
+    "toolCalls": [
+      {
+        "tool": "submit-feedback",
+        "input": {
+          "agentId": 2,
+          "value": 92,
+          "tag1": "tool_call",
+          "tag2": "reliability"
+        },
+        "output": {
+          "txHash": "0xcfc1577050fd2a0b9c7d9189933968e04011b4a3356d6b3e61ef59dabfb315e9"
+        },
+        "duration_ms": 0
+      },
+      {
+        "tool": "call-agent",
+        "input": {
+          "endpoint": "http://localhost:3001/test"
+        },
+        "output": {
+          "status": "ok",
+          "data": "Agent Alpha responding with high-quality data",
+          "latency": 50,
+          "confidence": 0.95
+        },
+        "duration_ms": 78
+      },
+      {
+        "tool": "submit-feedback",
+        "input": {
+          "agentId": 3,
+          "value": 91,
+          "tag1": "tool_call",
+          "tag2": "accuracy"
+        },
+        "output": {
+          "txHash": "0x4614a487606585dbe988f1209e8c05cf8cf511a74c4eaeecce16a10819aa9dd3"
+        },
+        "duration_ms": 0
+      },
+      {
+        "tool": "call-agent",
+        "input": {
+          "endpoint": "http://localhost:3002/test"
+        },
+        "output": {
+          "status": "ok",
+          "data": "Partial response from Beta",
+          "latency": 756,
+          "confidence": 0.6969615814386525
+        },
+        "duration_ms": 764
+      },
+      {
+        "tool": "submit-feedback",
+        "input": {
+          "agentId": 4,
+          "value": 56,
+          "tag1": "tool_call",
+          "tag2": "latency"
+        },
+        "output": {
+          "txHash": "0x43265f6373ea28830a48a3259355f24cda173d231f3bad6c6147c0485e3c6069"
+        },
+        "duration_ms": 0
+      }
+    ],
+    "failures": [],
+    "finalOutput": {
+      "agentsScored": 3,
+      "feedbackSubmitted": 3,
+      "failureCount": 0
+    }
+  }
+]

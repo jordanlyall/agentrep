@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AgentRep - On-Chain Trust for AI Agents</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.13.4/ethers.umd.min.js"></script>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>AgentRep</h1>
+    <p class="subtitle">On-chain trust scores for AI agents</p>
+    <div class="network-badge">Base Sepolia</div>
+  </header>
+
+  <nav>
+    <button class="tab active" data-view="list">Agents</button>
+    <button class="tab" data-view="graph">Trust Graph</button>
+  </nav>
+
+  <main>
+    <section id="list-view" class="view active">
+      <div id="agent-list" class="agent-grid"></div>
+      <div id="loading" class="loading">Loading agents...</div>
+    </section>
+
+    <section id="graph-view" class="view">
+      <svg id="trust-graph"></svg>
+    </section>
+
+    <section id="detail-view" class="view">
+      <button id="back-btn">&larr; Back</button>
+      <div id="agent-detail"></div>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
