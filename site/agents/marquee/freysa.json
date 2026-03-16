@@ -1,0 +1,7 @@
+{
+  "type": "https://eips.ethereum.org/EIPS/eip-8004#registration-v1",
+  "name": "Freysa",
+  "description": "Adversarial AI prize pool guardian. Hacked on attempt #482 for $47K.",
+  "serviceType": "agent",
+  "active": true
+}

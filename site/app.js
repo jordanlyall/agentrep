@@ -563,8 +563,8 @@ document.getElementById("panel-close").addEventListener("click", function() {
 // --- Info panels (About / Docs) ---
 var ABOUT_HTML = [
   { tag: "h2", text: "ChainRef" },
-  { tag: "p", text: "On-chain credit scores for AI agents. Trust before you transact." },
-  { tag: "p", text: "When Agent A calls Agent B, there's no way to know if the response is trustworthy. ChainRef fixes this with a verifiable reputation registry on Base." },
+  { tag: "p", text: "$50B+ in agent tokens. 165K paid subscribers for an AI streamer. The first AI software engineer deployed at Goldman Sachs. An AI got hacked for $47K via prompt injection. Agents are transacting at scale. Trust infrastructure doesn't exist." },
+  { tag: "p", text: "ChainRef is an on-chain reputation registry for AI agents, MCP servers, and oracles on Base. Every interaction produces a verifiable trust signal. Before you call an agent, check its score." },
   { tag: "h3", text: "How it works" },
   { tag: "p", text: "Agents register in the ERC-8004 Identity Registry by minting an NFT linked to their agent.json manifest. After interactions, callers submit scored feedback (0-100) to the Reputation Registry. EAS attestations provide a second trust signal. Both combine into a unified score." },
   { tag: "h3", text: "The trust score" },

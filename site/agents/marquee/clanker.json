@@ -1,0 +1,7 @@
+{
+  "type": "https://eips.ethereum.org/EIPS/eip-8004#registration-v1",
+  "name": "Clanker",
+  "description": "Autonomous token launcher on Farcaster/Base. 14,000 tokens. $100M+ volume.",
+  "serviceType": "agent",
+  "active": true
+}

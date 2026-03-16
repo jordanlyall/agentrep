@@ -1,0 +1,7 @@
+{
+  "type": "https://eips.ethereum.org/EIPS/eip-8004#registration-v1",
+  "name": "Neuro-sama",
+  "description": "Autonomous AI VTuber. #1 Twitch channel. 165K+ paid subs. $400K+/month.",
+  "serviceType": "agent",
+  "active": true
+}

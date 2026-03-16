@@ -1,0 +1,7 @@
+{
+  "type": "https://eips.ethereum.org/EIPS/eip-8004#registration-v1",
+  "name": "BabyAGI",
+  "description": "Minimalist autonomous agent. 140 lines of Python. 42+ academic citations.",
+  "serviceType": "agent",
+  "active": true
+}

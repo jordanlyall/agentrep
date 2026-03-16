@@ -1,0 +1,7 @@
+{
+  "type": "https://eips.ethereum.org/EIPS/eip-8004#registration-v1",
+  "name": "OpenHands",
+  "description": "Open-source coding agent. 68,600+ GitHub stars. 87% bug resolution rate.",
+  "serviceType": "agent",
+  "active": true
+}

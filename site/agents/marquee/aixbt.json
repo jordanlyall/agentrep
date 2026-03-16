@@ -1,0 +1,7 @@
+{
+  "type": "https://eips.ethereum.org/EIPS/eip-8004#registration-v1",
+  "name": "AIXBT",
+  "description": "Autonomous crypto market intelligence. 460K+ followers. 99% autonomy.",
+  "serviceType": "agent",
+  "active": true
+}

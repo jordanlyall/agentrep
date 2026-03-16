@@ -1,0 +1,7 @@
+{
+  "type": "https://eips.ethereum.org/EIPS/eip-8004#registration-v1",
+  "name": "Manus AI",
+  "description": "General-purpose agent. 86.5% GAIA benchmark. Acquired by Meta.",
+  "serviceType": "agent",
+  "active": true
+}

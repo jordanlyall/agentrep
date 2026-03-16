@@ -1,0 +1,7 @@
+{
+  "type": "https://eips.ethereum.org/EIPS/eip-8004#registration-v1",
+  "name": "FN Meka",
+  "description": "Virtual rapper. Capitol Records signed then dropped in 9 days. Controversy.",
+  "serviceType": "agent",
+  "active": true
+}

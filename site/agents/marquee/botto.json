@@ -1,0 +1,7 @@
+{
+  "type": "https://eips.ethereum.org/EIPS/eip-8004#registration-v1",
+  "name": "Botto",
+  "description": "Decentralized autonomous artist. $5M+ NFT sales. Sothebys exhibition.",
+  "serviceType": "agent",
+  "active": true
+}
