@@ -406,5 +406,124 @@ document.getElementById("panel-close").addEventListener("click", function() {
   document.getElementById("detail-panel").classList.add("hidden");
 });
 
+// --- Info panels (About / Docs) ---
+var ABOUT_HTML = [
+  { tag: "h2", text: "ChainRef" },
+  { tag: "p", text: "On-chain credit scores for AI agents. Trust before you transact." },
+  { tag: "p", text: "When Agent A calls Agent B, there's no way to know if the response is trustworthy. ChainRef fixes this with a verifiable reputation registry on Base." },
+  { tag: "h3", text: "How it works" },
+  { tag: "p", text: "Agents register in the ERC-8004 Identity Registry by minting an NFT linked to their agent.json manifest. After interactions, callers submit scored feedback (0-100) to the Reputation Registry. EAS attestations provide a second trust signal. Both combine into a unified score." },
+  { tag: "h3", text: "The trust score" },
+  { tag: "p", text: "score = (0.6 \u00D7 erc8004_avg) + (0.4 \u00D7 eas_avg)" },
+  { tag: "p", text: "Agents with zero feedback show as unrated (not zero). Self-review is blocked on-chain." },
+  { tag: "h3", text: "Contracts (Base Sepolia)" },
+  { tag: "li", label: "IdentityRegistry", addr: "0xea16A6AE8591Dd93E09ed8Fb252bd5Da117D451c" },
+  { tag: "li", label: "ReputationRegistry", addr: "0x91A8e9D96fe39d4ae11F2E64769B795820a047f4" },
+  { tag: "h3", text: "MCP tools" },
+  { tag: "li-plain", text: "register-agent \u2014 mint identity NFT" },
+  { tag: "li-plain", text: "get-agent-reputation \u2014 unified trust score" },
+  { tag: "li-plain", text: "submit-feedback \u2014 scored review (0-100)" },
+  { tag: "li-plain", text: "submit-attestation \u2014 EAS attestation" },
+  { tag: "li-plain", text: "list-agents \u2014 paginated registry" },
+  { tag: "h3", text: "Links" },
+  { tag: "link", text: "GitHub", href: "https://github.com/jordanlyall/agentrep" },
+  { tag: "link", text: "Explorer", href: "https://explorer-seven-psi.vercel.app" },
+  { tag: "link", text: "EAS Schema", href: "https://base-sepolia.easscan.org/schema/view/0x1b891f631aeaf26293ed5b1af44280f770e2b39fb19359b36b10de718b96b228" },
+  { tag: "p", text: "Built for Synthesis Hackathon 2026. MIT License." },
+];
+
+var DOCS_HTML = [
+  { tag: "h2", text: "Quick start" },
+  { tag: "h3", text: "1. Clone & install" },
+  { tag: "pre", text: "git clone https://github.com/jordanlyall/agentrep.git\ncd agentrep/mcp-server && npm install" },
+  { tag: "h3", text: "2. Configure" },
+  { tag: "pre", text: "cp .env.example .env\n# Add DEPLOYER_PRIVATE_KEY\n# Contract addresses are pre-filled" },
+  { tag: "h3", text: "3. Run MCP server" },
+  { tag: "pre", text: "npm start\n# ChainRef MCP server running on stdio" },
+  { tag: "h3", text: "4. Run the demo" },
+  { tag: "pre", text: "npx tsx demo/agent-alpha.ts &\nnpx tsx demo/agent-beta.ts &\nnpx tsx demo/run-scoring-loop.ts" },
+  { tag: "p", text: "The scoring loop discovers agents, tests endpoints, scores responses, and submits on-chain feedback with real transaction hashes." },
+  { tag: "h3", text: "Run tests" },
+  { tag: "pre", text: "cd contracts && forge test -v\n# 12 tests pass" },
+  { tag: "h3", text: "Tech stack" },
+  { tag: "li-plain", text: "Solidity + Foundry (contracts)" },
+  { tag: "li-plain", text: "Node.js + TypeScript + MCP SDK (server)" },
+  { tag: "li-plain", text: "ethers.js + EAS SDK (chain)" },
+  { tag: "li-plain", text: "D3.js (trust graph)" },
+  { tag: "li-plain", text: "Base Sepolia (chain)" },
+];
+
+function buildInfoContent(items) {
+  var frag = document.createDocumentFragment();
+  var currentUl = null;
+
+  for (var item of items) {
+    if (item.tag === "h2") {
+      currentUl = null;
+      var h2 = document.createElement("h2"); h2.textContent = item.text; frag.appendChild(h2);
+    } else if (item.tag === "h3") {
+      currentUl = null;
+      var h3 = document.createElement("h3"); h3.textContent = item.text; frag.appendChild(h3);
+    } else if (item.tag === "p") {
+      currentUl = null;
+      var p = document.createElement("p"); p.textContent = item.text; frag.appendChild(p);
+    } else if (item.tag === "pre") {
+      currentUl = null;
+      var pre = document.createElement("pre");
+      var code = document.createElement("code"); code.textContent = item.text;
+      pre.appendChild(code); frag.appendChild(pre);
+    } else if (item.tag === "li") {
+      if (!currentUl) { currentUl = document.createElement("ul"); frag.appendChild(currentUl); }
+      var li = document.createElement("li");
+      li.textContent = item.label;
+      var addr = document.createElement("span");
+      addr.className = "info-contract";
+      var a = document.createElement("a");
+      a.href = CONFIG.explorer + "/address/" + item.addr;
+      a.target = "_blank";
+      a.textContent = item.addr;
+      addr.appendChild(a);
+      li.appendChild(addr);
+      currentUl.appendChild(li);
+    } else if (item.tag === "li-plain") {
+      if (!currentUl) { currentUl = document.createElement("ul"); frag.appendChild(currentUl); }
+      var li2 = document.createElement("li"); li2.textContent = item.text; currentUl.appendChild(li2);
+    } else if (item.tag === "link") {
+      if (!currentUl) { currentUl = document.createElement("ul"); frag.appendChild(currentUl); }
+      var li3 = document.createElement("li");
+      var la = document.createElement("a"); la.href = item.href; la.target = "_blank"; la.textContent = item.text;
+      li3.appendChild(la); currentUl.appendChild(li3);
+    }
+  }
+  return frag;
+}
+
+function showInfoPanel(items) {
+  var panel = document.getElementById("info-panel");
+  var content = document.getElementById("info-content");
+  content.replaceChildren();
+  content.appendChild(buildInfoContent(items));
+  panel.classList.remove("hidden");
+  document.getElementById("detail-panel").classList.add("hidden");
+}
+
+document.getElementById("about-link").addEventListener("click", function(e) {
+  e.preventDefault();
+  var panel = document.getElementById("info-panel");
+  if (!panel.classList.contains("hidden")) { panel.classList.add("hidden"); return; }
+  showInfoPanel(ABOUT_HTML);
+});
+
+document.getElementById("docs-link").addEventListener("click", function(e) {
+  e.preventDefault();
+  var panel = document.getElementById("info-panel");
+  if (!panel.classList.contains("hidden")) { panel.classList.add("hidden"); return; }
+  showInfoPanel(DOCS_HTML);
+});
+
+document.getElementById("info-close").addEventListener("click", function() {
+  document.getElementById("info-panel").classList.add("hidden");
+});
+
 // --- Init ---
 loadData().catch(function(err) { console.error("Load error:", err); });

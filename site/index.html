@@ -26,6 +26,8 @@
       <input type="text" id="query-input" placeholder="Look up agent: ID or 0x address" autocomplete="off" spellcheck="false">
     </div>
     <div class="topbar-right">
+      <a href="#" id="about-link">About</a>
+      <a href="#" id="docs-link">Docs</a>
       <a href="https://github.com/jordanlyall/agentrep" target="_blank">Source</a>
       <a href="https://sepolia.basescan.org/address/0xea16A6AE8591Dd93E09ed8Fb252bd5Da117D451c" target="_blank">Contracts</a>
       <span class="chain-badge">Base Sepolia</span>
@@ -35,6 +37,12 @@
   <!-- Main canvas: the trust graph IS the page -->
   <main class="viewport">
     <svg id="graph"></svg>
+
+    <!-- About/Docs slide panel -->
+    <aside id="info-panel" class="info-panel hidden">
+      <button id="info-close">&times;</button>
+      <div id="info-content"></div>
+    </aside>
 
     <!-- Agent detail panel (hidden by default) -->
     <aside id="detail-panel" class="panel hidden">

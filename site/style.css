@@ -183,6 +183,133 @@ body {
   stroke-opacity: 0.6;
 }
 
+/* Info panel (about/docs) */
+.info-panel {
+  position: absolute;
+  top: 0; left: 0;
+  width: 420px;
+  height: 100%;
+  overflow-y: auto;
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  z-index: 45;
+  padding: 28px 28px 40px;
+  animation: infoPanelIn 0.2s ease;
+}
+
+.info-panel.hidden { display: none; }
+
+@keyframes infoPanelIn {
+  from { opacity: 0; transform: translateX(-16px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+#info-close {
+  position: absolute;
+  top: 12px; right: 14px;
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 18px;
+  cursor: pointer;
+  z-index: 2;
+}
+
+#info-close:hover { color: var(--text-bright); }
+
+.info-panel h2 {
+  font-family: var(--body);
+  font-size: 22px;
+  font-weight: 400;
+  color: var(--text-bright);
+  margin-bottom: 16px;
+  line-height: 1.25;
+}
+
+.info-panel h3 {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  margin-top: 24px;
+  margin-bottom: 10px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+}
+
+.info-panel h3:first-of-type {
+  border-top: none;
+  padding-top: 0;
+  margin-top: 20px;
+}
+
+.info-panel p {
+  font-family: var(--body);
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--text);
+  margin-bottom: 12px;
+  font-weight: 300;
+}
+
+.info-panel code {
+  font-family: var(--mono);
+  font-size: 12px;
+  background: var(--surface-2);
+  padding: 1px 5px;
+  border-radius: 2px;
+  color: var(--accent);
+}
+
+.info-panel pre {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 12px;
+  overflow-x: auto;
+  margin-bottom: 12px;
+}
+
+.info-panel pre code {
+  background: none;
+  padding: 0;
+  font-size: 11px;
+  line-height: 1.8;
+  color: var(--text);
+}
+
+.info-panel a {
+  color: var(--blue);
+  text-decoration: none;
+}
+
+.info-panel a:hover { text-decoration: underline; }
+
+.info-panel ul {
+  list-style: none;
+  margin-bottom: 12px;
+}
+
+.info-panel li {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--text);
+  padding: 6px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.info-panel li:last-child { border-bottom: none; }
+
+.info-contract {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text-muted);
+  word-break: break-all;
+  display: block;
+  margin-top: 2px;
+}
+
 /* Detail panel */
 .panel {
   position: absolute;
