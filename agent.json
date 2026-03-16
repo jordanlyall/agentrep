@@ -1,0 +1,31 @@
+{
+  "type": "https://eips.ethereum.org/EIPS/eip-8004#registration-v1",
+  "name": "AgentRep-Scorer",
+  "description": "On-chain reputation scorer for AI agents on Base. Registers agents via ERC-8004 Identity Registry, collects feedback via ERC-8004 Reputation Registry, and creates EAS attestations.",
+  "services": [
+    { "name": "MCP", "endpoint": "stdio", "version": "1.0.0" },
+    { "name": "web", "endpoint": "https://agentrep.vercel.app" }
+  ],
+  "x402Support": false,
+  "active": true,
+  "registrations": [
+    { "agentId": 1, "agentRegistry": "eip155:84532:0xea16A6AE8591Dd93E09ed8Fb252bd5Da117D451c" }
+  ],
+  "supportedTrust": ["reputation"],
+  "operatorWallet": "0x75668C4DDd32480d3fC63BBb180bEa1c9e764612",
+  "tools": [
+    "register-agent",
+    "get-agent-reputation",
+    "submit-feedback",
+    "submit-attestation",
+    "list-agents"
+  ],
+  "techStack": ["claude-code", "base-sepolia", "eas", "erc-8004", "mcp-sdk", "foundry"],
+  "computeConstraints": { "maxCallsPerMinute": 60 },
+  "taskCategories": ["reputation", "trust", "identity"],
+  "contracts": {
+    "chain": "eip155:84532",
+    "identityRegistry": "0xea16A6AE8591Dd93E09ed8Fb252bd5Da117D451c",
+    "reputationRegistry": "0x91A8e9D96fe39d4ae11F2E64769B795820a047f4"
+  }
+}
