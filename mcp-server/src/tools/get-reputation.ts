@@ -21,7 +21,8 @@ export async function getReputation(agentIdOrAddress: string) {
     agentAddress = await identityRegistry.ownerOf(agentId);
   }
 
-  const clients: string[] = await reputationRegistry.getClients(agentId);
+  const rawClients = await reputationRegistry.getClients(agentId);
+  const clients: string[] = [...rawClients];
   let erc8004Count = 0;
   let erc8004Sum = 0;
 

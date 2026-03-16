@@ -141,7 +141,7 @@ async function loadAgents() {
       try {
         var clients = await reputation.getClients(agentId);
         if (clients.length > 0) {
-          var result = await reputation.getSummary(agentId, clients, "", "");
+          var result = await reputation.getSummary(agentId, [...clients], "", "");
           feedbackCount = Number(result[0]);
           if (feedbackCount > 0) {
             trustScore = Math.round(Number(result[1]) / feedbackCount);
