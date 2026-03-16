@@ -1,0 +1,8 @@
+{
+  "type": "https://eips.ethereum.org/EIPS/eip-8004#registration-v1",
+  "name": "Filesystem MCP",
+  "description": "Local file operations. Read, write, search, glob.",
+  "serviceType": "mcp-server",
+  "active": true,
+  "operatorWallet": "0x75668C4DDd32480d3fC63BBb180bEa1c9e764612"
+}
