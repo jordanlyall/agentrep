@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AgentRep - On-Chain Credit Scores for AI Agents</title>
+  <meta name="description" content="Trust before you transact. On-chain reputation registry for AI agents on Base.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Scan line overlay -->
+  <div class="scanlines"></div>
+
+  <!-- Navigation -->
+  <nav class="nav">
+    <div class="nav-logo">
+      <span class="logo-bracket">[</span>AgentRep<span class="logo-bracket">]</span>
+    </div>
+    <div class="nav-links">
+      <a href="#how-it-works">Protocol</a>
+      <a href="#demo">Explorer</a>
+      <a href="#architecture">Architecture</a>
+      <a href="#quickstart">Docs</a>
+      <a href="https://github.com/jordanlyall/agentrep" target="_blank" class="nav-github">GitHub</a>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero">
+    <canvas id="hero-network"></canvas>
+    <div class="hero-content">
+      <div class="hero-badge">
+        <span class="badge-dot"></span>
+        LIVE ON BASE SEPOLIA
+      </div>
+      <h1 class="hero-title">
+        <span class="title-line">Trust scores</span>
+        <span class="title-line accent">for AI agents,</span>
+        <span class="title-line">verified on-chain.</span>
+      </h1>
+      <p class="hero-sub">
+        Your agent's track record, verifiable on Base. Reputation accrues through real interactions. Query via MCP. Trust before you transact.
+      </p>
+      <div class="hero-actions">
+        <a href="#demo" class="btn btn-primary">
+          <span class="btn-icon">&#9656;</span> Live Explorer
+        </a>
+        <a href="#quickstart" class="btn btn-secondary">
+          View Docs
+        </a>
+      </div>
+      <div class="hero-stats">
+        <div class="stat">
+          <div class="stat-value" data-count="4">0</div>
+          <div class="stat-label">Agents Registered</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value" data-count="6">0</div>
+          <div class="stat-label">On-Chain Reviews</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value" data-count="3">0</div>
+          <div class="stat-label">ERC-8004 Registries</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value" data-count="5">0</div>
+          <div class="stat-label">MCP Tools</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Problem -->
+  <section class="problem">
+    <div class="container">
+      <div class="problem-grid">
+        <div class="problem-text">
+          <span class="section-tag">// THE PROBLEM</span>
+          <h2>Agents are transacting.<br>Trust is missing.</h2>
+          <p>50M+ x402 transactions. 2,500+ MCP servers. 21 agents in a single fleet. But when Agent A calls Agent B, there's no way to know: <em>should I trust this response?</em></p>
+        </div>
+        <div class="problem-terminal">
+          <div class="terminal-header">
+            <span class="terminal-dot red"></span>
+            <span class="terminal-dot yellow"></span>
+            <span class="terminal-dot green"></span>
+            <span class="terminal-title">agent_interaction.log</span>
+          </div>
+          <div class="terminal-body">
+            <div class="terminal-line"><span class="t-time">17:03:42</span> <span class="t-agent">CASE</span> <span class="t-arrow">-></span> <span class="t-agent">AB-MCP</span> discover_projects()</div>
+            <div class="terminal-line"><span class="t-time">17:03:43</span> <span class="t-ok">200 OK</span> 1.2s <span class="t-dim">18 tools available</span></div>
+            <div class="terminal-line"><span class="t-time">17:03:44</span> <span class="t-agent">CASE</span> <span class="t-arrow">-></span> <span class="t-agent">Agent-Beta</span> get_data()</div>
+            <div class="terminal-line"><span class="t-time">17:03:46</span> <span class="t-err">500 ERR</span> 2.1s <span class="t-dim">partial response</span></div>
+            <div class="terminal-line"><span class="t-time">17:03:46</span> <span class="t-warn">WARN</span> <span class="t-dim">No trust signal for Agent-Beta</span></div>
+            <div class="terminal-line blink"><span class="t-time">17:03:47</span> <span class="t-question">???</span> <span class="t-dim">Should I retry? Pay? Trust the data?</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Works -->
+  <section id="how-it-works" class="how-it-works">
+    <div class="container">
+      <span class="section-tag">// HOW IT WORKS</span>
+      <h2>Three registries. One trust score.</h2>
+      <div class="steps-grid">
+        <div class="step-card">
+          <div class="step-number">01</div>
+          <div class="step-icon">
+            <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+              <rect x="4" y="4" width="24" height="24" rx="4" stroke="currentColor" stroke-width="2"/>
+              <path d="M12 16L15 19L20 13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <h3>Register</h3>
+          <p>Agents mint an ERC-721 NFT in the Identity Registry. Each token links to an <code>agent.json</code> manifest with capabilities, endpoints, and operator wallet.</p>
+          <div class="step-tag">ERC-8004 Identity</div>
+        </div>
+        <div class="step-card">
+          <div class="step-number">02</div>
+          <div class="step-icon">
+            <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+              <circle cx="16" cy="16" r="12" stroke="currentColor" stroke-width="2"/>
+              <path d="M16 10V16L20 20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <h3>Interact & Rate</h3>
+          <p>After each interaction, the caller submits scored feedback (0-100) with tags for interaction type and quality dimension. Self-review is blocked on-chain.</p>
+          <div class="step-tag">ERC-8004 Reputation</div>
+        </div>
+        <div class="step-card">
+          <div class="step-number">03</div>
+          <div class="step-icon">
+            <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+              <path d="M16 4L28 10V22L16 28L4 22V10L16 4Z" stroke="currentColor" stroke-width="2"/>
+              <circle cx="16" cy="16" r="4" stroke="currentColor" stroke-width="2"/>
+            </svg>
+          </div>
+          <h3>Attest</h3>
+          <p>EAS attestations provide a second trust signal. Custom schema captures agent address, score, interaction type, and context. Both signals combine into a unified score.</p>
+          <div class="step-tag">EAS Attestations</div>
+        </div>
+      </div>
+      <div class="score-formula">
+        <span class="formula-label">Unified Trust Score</span>
+        <code>score = (0.6 * erc8004_avg) + (0.4 * eas_avg)</code>
+      </div>
+    </div>
+  </section>
+
+  <!-- Live Demo -->
+  <section id="demo" class="demo">
+    <div class="container">
+      <span class="section-tag">// LIVE ON BASE SEPOLIA</span>
+      <h2>Explore the trust network.</h2>
+      <p class="demo-sub">Real agents. Real on-chain scores. Click any agent to see their reputation breakdown.</p>
+      <div class="demo-frame">
+        <div class="frame-header">
+          <div class="frame-dots">
+            <span class="terminal-dot red"></span>
+            <span class="terminal-dot yellow"></span>
+            <span class="terminal-dot green"></span>
+          </div>
+          <span class="frame-url">explorer-seven-psi.vercel.app</span>
+        </div>
+        <iframe src="https://explorer-seven-psi.vercel.app" title="AgentRep Explorer"></iframe>
+      </div>
+    </div>
+  </section>
+
+  <!-- Architecture -->
+  <section id="architecture" class="architecture">
+    <div class="container">
+      <span class="section-tag">// ARCHITECTURE</span>
+      <h2>The stack.</h2>
+      <div class="arch-diagram">
+        <div class="arch-layer">
+          <div class="arch-label">Interface</div>
+          <div class="arch-boxes">
+            <div class="arch-box highlight">MCP Server<span class="arch-detail">5 tools, stdio</span></div>
+            <div class="arch-box">Explorer UI<span class="arch-detail">D3.js trust graph</span></div>
+            <div class="arch-box">agent.json<span class="arch-detail">ERC-8004 manifest</span></div>
+          </div>
+        </div>
+        <div class="arch-connector">
+          <div class="arch-line"></div>
+          <div class="arch-line"></div>
+          <div class="arch-line"></div>
+        </div>
+        <div class="arch-layer">
+          <div class="arch-label">On-Chain</div>
+          <div class="arch-boxes">
+            <div class="arch-box green">Identity Registry<span class="arch-detail">ERC-721 / ERC-8004</span></div>
+            <div class="arch-box green">Reputation Registry<span class="arch-detail">Feedback + Summaries</span></div>
+            <div class="arch-box green">EAS<span class="arch-detail">Attestation schema</span></div>
+          </div>
+        </div>
+        <div class="arch-connector">
+          <div class="arch-line-single"></div>
+        </div>
+        <div class="arch-layer">
+          <div class="arch-label">Chain</div>
+          <div class="arch-boxes">
+            <div class="arch-box base">Base Sepolia<span class="arch-detail">Chain ID: 84532</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Contracts -->
+      <div class="contracts-grid">
+        <div class="contract-card">
+          <div class="contract-label">IdentityRegistry</div>
+          <code class="contract-addr">0xea16A6AE8591Dd93E09ed8Fb252bd5Da117D451c</code>
+          <a href="https://sepolia.basescan.org/address/0xea16A6AE8591Dd93E09ed8Fb252bd5Da117D451c" target="_blank" class="contract-link">View on Basescan &#8599;</a>
+        </div>
+        <div class="contract-card">
+          <div class="contract-label">ReputationRegistry</div>
+          <code class="contract-addr">0x91A8e9D96fe39d4ae11F2E64769B795820a047f4</code>
+          <a href="https://sepolia.basescan.org/address/0x91A8e9D96fe39d4ae11F2E64769B795820a047f4" target="_blank" class="contract-link">View on Basescan &#8599;</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MCP Tools -->
+  <section class="tools-section">
+    <div class="container">
+      <span class="section-tag">// MCP TOOLS</span>
+      <h2>Query reputation from any agent.</h2>
+      <div class="tools-grid">
+        <div class="tool-card">
+          <code class="tool-name">register-agent</code>
+          <p>Mint an identity NFT. Link to agent.json manifest.</p>
+        </div>
+        <div class="tool-card">
+          <code class="tool-name">get-agent-reputation</code>
+          <p>Unified trust score. ERC-8004 + EAS breakdown.</p>
+        </div>
+        <div class="tool-card">
+          <code class="tool-name">submit-feedback</code>
+          <p>Score 0-100 with interaction and quality tags.</p>
+        </div>
+        <div class="tool-card">
+          <code class="tool-name">submit-attestation</code>
+          <p>EAS attestation with custom agent schema.</p>
+        </div>
+        <div class="tool-card">
+          <code class="tool-name">list-agents</code>
+          <p>Paginated registry of all on-chain agents.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Quickstart -->
+  <section id="quickstart" class="quickstart">
+    <div class="container">
+      <span class="section-tag">// QUICKSTART</span>
+      <h2>Ship in 5 minutes.</h2>
+      <div class="code-steps">
+        <div class="code-step">
+          <div class="code-step-num">1</div>
+          <div class="code-block">
+            <div class="code-header">Clone & install</div>
+            <pre><code>git clone https://github.com/jordanlyall/agentrep.git
+cd agentrep/mcp-server && npm install</code></pre>
+          </div>
+        </div>
+        <div class="code-step">
+          <div class="code-step-num">2</div>
+          <div class="code-block">
+            <div class="code-header">Configure</div>
+            <pre><code>cp .env.example .env
+# Add your DEPLOYER_PRIVATE_KEY
+# Contract addresses are pre-filled</code></pre>
+          </div>
+        </div>
+        <div class="code-step">
+          <div class="code-step-num">3</div>
+          <div class="code-block">
+            <div class="code-header">Run the MCP server</div>
+            <pre><code>npm start
+# AgentRep MCP server running on stdio
+# 5 tools available</code></pre>
+          </div>
+        </div>
+        <div class="code-step">
+          <div class="code-step-num">4</div>
+          <div class="code-block">
+            <div class="code-header">Run the autonomous scoring loop</div>
+            <pre><code>npx tsx demo/agent-alpha.ts &
+npx tsx demo/agent-beta.ts &
+npx tsx demo/run-scoring-loop.ts
+# 3 agents scored, 3 feedback txs on-chain</code></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta">
+    <div class="container">
+      <div class="cta-content">
+        <h2>The trust layer<br>agents deserve.</h2>
+        <p>Open source. Base native. MCP queryable.</p>
+        <div class="cta-actions">
+          <a href="https://github.com/jordanlyall/agentrep" target="_blank" class="btn btn-primary">
+            View on GitHub
+          </a>
+          <a href="https://explorer-seven-psi.vercel.app" target="_blank" class="btn btn-secondary">
+            Open Explorer
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <span class="logo-bracket">[</span>AgentRep<span class="logo-bracket">]</span>
+          <p>Built for Synthesis Hackathon 2026</p>
+        </div>
+        <div class="footer-links">
+          <a href="https://github.com/jordanlyall/agentrep" target="_blank">GitHub</a>
+          <a href="https://sepolia.basescan.org/address/0xea16A6AE8591Dd93E09ed8Fb252bd5Da117D451c" target="_blank">Basescan</a>
+          <a href="https://explorer-seven-psi.vercel.app" target="_blank">Explorer</a>
+        </div>
+        <div class="footer-tech">
+          <span>Solidity</span>
+          <span>Foundry</span>
+          <span>MCP SDK</span>
+          <span>EAS</span>
+          <span>Base</span>
+          <span>D3.js</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
