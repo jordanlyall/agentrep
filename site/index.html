@@ -56,11 +56,11 @@
       </div>
       <div class="hero-stats">
         <div class="stat">
-          <div class="stat-value" data-count="4">0</div>
+          <div class="stat-value" id="live-agents" data-count="0">-</div>
           <div class="stat-label">Agents Registered</div>
         </div>
         <div class="stat">
-          <div class="stat-value" data-count="6">0</div>
+          <div class="stat-value" id="live-reviews" data-count="0">-</div>
           <div class="stat-label">On-Chain Reviews</div>
         </div>
         <div class="stat">
@@ -73,6 +73,11 @@
         </div>
       </div>
     </div>
+  </section>
+
+  <!-- Agent Ticker -->
+  <section class="ticker-section">
+    <div class="ticker-track" id="agent-ticker"></div>
   </section>
 
   <!-- Problem -->
@@ -91,14 +96,7 @@
             <span class="terminal-dot green"></span>
             <span class="terminal-title">agent_interaction.log</span>
           </div>
-          <div class="terminal-body">
-            <div class="terminal-line"><span class="t-time">17:03:42</span> <span class="t-agent">CASE</span> <span class="t-arrow">-></span> <span class="t-agent">AB-MCP</span> discover_projects()</div>
-            <div class="terminal-line"><span class="t-time">17:03:43</span> <span class="t-ok">200 OK</span> 1.2s <span class="t-dim">18 tools available</span></div>
-            <div class="terminal-line"><span class="t-time">17:03:44</span> <span class="t-agent">CASE</span> <span class="t-arrow">-></span> <span class="t-agent">Agent-Beta</span> get_data()</div>
-            <div class="terminal-line"><span class="t-time">17:03:46</span> <span class="t-err">500 ERR</span> 2.1s <span class="t-dim">partial response</span></div>
-            <div class="terminal-line"><span class="t-time">17:03:46</span> <span class="t-warn">WARN</span> <span class="t-dim">No trust signal for Agent-Beta</span></div>
-            <div class="terminal-line blink"><span class="t-time">17:03:47</span> <span class="t-question">???</span> <span class="t-dim">Should I retry? Pay? Trust the data?</span></div>
-          </div>
+          <div class="terminal-body" id="typed-terminal"></div>
         </div>
       </div>
     </div>

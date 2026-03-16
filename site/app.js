@@ -119,6 +119,154 @@
   draw();
 })();
 
+// --- Live stats from Base Sepolia ---
+(function() {
+  var RPC = "https://sepolia.base.org";
+  var IDENTITY = "0xea16A6AE8591Dd93E09ed8Fb252bd5Da117D451c";
+  var REPUTATION = "0x91A8e9D96fe39d4ae11F2E64769B795820a047f4";
+  var DEPLOY_BLOCK = 38924000;
+
+  var ID_ABI = [
+    "function totalAgents() view returns (uint256)",
+    "event Registered(uint256 indexed agentId, string agentURI, address indexed owner)",
+  ];
+  var REP_ABI = [
+    "event NewFeedback(uint256 indexed agentId, address indexed clientAddress, uint64 feedbackIndex, int128 value, uint8 valueDecimals, string tag1, string tag2, string endpoint, string feedbackURI, bytes32 feedbackHash)",
+    "function getClients(uint256 agentId) view returns (address[])",
+    "function getSummary(uint256 agentId, address[] clients, string tag1, string tag2) view returns (uint64 count, int128 summaryValue, uint8 summaryDecimals)",
+  ];
+
+  var provider = new ethers.JsonRpcProvider(RPC);
+  var identity = new ethers.Contract(IDENTITY, ID_ABI, provider);
+  var reputation = new ethers.Contract(REPUTATION, REP_ABI, provider);
+
+  function scoreClass(s) {
+    if (s === null) return "none";
+    if (s >= 70) return "high";
+    if (s >= 40) return "mid";
+    return "low";
+  }
+
+  async function loadLiveStats() {
+    try {
+      var total = Number(await identity.totalAgents());
+      var agentEl = document.getElementById("live-agents");
+      if (agentEl) { agentEl.setAttribute("data-count", String(total)); agentEl.textContent = String(total); }
+
+      var fbFilter = reputation.filters.NewFeedback();
+      var fbEvents = await reputation.queryFilter(fbFilter, DEPLOY_BLOCK);
+      var reviewEl = document.getElementById("live-reviews");
+      if (reviewEl) { reviewEl.setAttribute("data-count", String(fbEvents.length)); reviewEl.textContent = String(fbEvents.length); }
+
+      var regFilter = identity.filters.Registered();
+      var regEvents = await identity.queryFilter(regFilter, DEPLOY_BLOCK);
+
+      var tickerData = [];
+      for (var ev of regEvents) {
+        var agentId = Number(ev.args[0]);
+        var uri = ev.args[1];
+        var score = null;
+        var reviews = 0;
+        try {
+          var clients = Array.from(await reputation.getClients(agentId));
+          if (clients.length > 0) {
+            var summary = await reputation.getSummary(agentId, clients, "", "");
+            reviews = Number(summary[0]);
+            if (reviews > 0) { score = Math.round(Number(summary[1]) / reviews); score = Math.max(0, Math.min(100, score)); }
+          }
+        } catch (e) {}
+
+        var name = "Agent #" + agentId;
+        try {
+          if (uri.startsWith("http")) { var resp = await fetch(uri); if (resp.ok) { var j = await resp.json(); if (j.name) name = j.name; } }
+        } catch (e) {}
+
+        tickerData.push({ name: name, score: score, reviews: reviews });
+      }
+      buildTicker(tickerData);
+    } catch (e) { console.error("Live stats error:", e); }
+  }
+
+  function buildTicker(agents) {
+    var track = document.getElementById("agent-ticker");
+    if (!track || agents.length === 0) return;
+    track.replaceChildren();
+    var items = agents.concat(agents);
+    for (var a of items) {
+      var item = document.createElement("div");
+      item.className = "ticker-item";
+      var scoreBadge = document.createElement("span");
+      scoreBadge.className = "ticker-score " + scoreClass(a.score);
+      scoreBadge.textContent = a.score !== null ? String(a.score) : "?";
+      item.appendChild(scoreBadge);
+      var name = document.createElement("span");
+      name.className = "ticker-name";
+      name.textContent = a.name;
+      item.appendChild(name);
+      var reviews = document.createElement("span");
+      reviews.className = "ticker-reviews";
+      reviews.textContent = a.reviews + " reviews";
+      item.appendChild(reviews);
+      track.appendChild(item);
+    }
+  }
+
+  loadLiveStats();
+})();
+
+// --- Typing terminal animation ---
+(function() {
+  var terminal = document.getElementById("typed-terminal");
+  if (!terminal) return;
+
+  // Each line is built with DOM methods from static content
+  var lines = [
+    { delay: 0, parts: [["t-time","17:03:42"],["t-agent"," CASE"],["t-arrow"," -> "],["t-agent","AB-MCP"],["t-dim"," discover_projects()"]] },
+    { delay: 800, parts: [["t-time","17:03:43"],["t-ok"," 200 OK"],["t-dim"," 1.2s 18 tools available"]] },
+    { delay: 1600, parts: [["t-time","17:03:44"],["t-agent"," CASE"],["t-arrow"," -> "],["t-agent","Agent-Beta"],["t-dim"," get_data()"]] },
+    { delay: 2800, parts: [["t-time","17:03:46"],["t-err"," 500 ERR"],["t-dim"," 2.1s partial response"]] },
+    { delay: 3400, parts: [["t-time","17:03:46"],["t-warn"," WARN"],["t-dim"," No trust signal for Agent-Beta"]] },
+    { delay: 4200, parts: [["t-time","17:03:47"],["t-question"," ???"],["t-dim"," Should I retry? Pay? Trust the data?"]], blink: true },
+    { delay: 5500, spacer: true },
+    { delay: 5600, parts: [["t-time","17:03:48"],["t-agent"," CASE"],["t-arrow"," -> "],["t-ok","ChainRef"],["t-dim"," get-agent-reputation(Agent-Beta)"]] },
+    { delay: 6400, parts: [["t-time","17:03:48"],["t-ok"," SCORE: 35"],["t-err"," LOW TRUST"],["t-dim"," 3 reviews, 3 reviewers"]] },
+    { delay: 7200, parts: [["t-time","17:03:48"],["t-ok"," ACTION"],["t-dim"," Skipping Agent-Beta. Routing to Agent-Alpha."]] },
+  ];
+
+  var observer = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        startTyping();
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.3 });
+
+  observer.observe(terminal);
+
+  function startTyping() {
+    lines.forEach(function(line) {
+      setTimeout(function() {
+        if (line.spacer) {
+          var spacer = document.createElement("div");
+          spacer.style.height = "0.5rem";
+          terminal.appendChild(spacer);
+          return;
+        }
+        var div = document.createElement("div");
+        div.className = "terminal-line terminal-line-typed" + (line.blink ? " blink" : "");
+        for (var p of line.parts) {
+          var span = document.createElement("span");
+          span.className = p[0];
+          span.textContent = p[1];
+          div.appendChild(span);
+        }
+        terminal.appendChild(div);
+      }, line.delay);
+    });
+  }
+})();
+
 // --- Try It: live trust score lookup ---
 (function() {
   var RPC = "https://sepolia.base.org";
