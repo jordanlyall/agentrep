@@ -621,6 +621,54 @@ body {
 .fb-from { color: var(--text-muted); font-size: 10px; }
 .fb-tags { color: var(--text-muted); font-size: 10px; }
 
+/* Score breakdown dimensions */
+.dim-row {
+  display: grid;
+  grid-template-columns: 80px 1fr 32px;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 0;
+}
+
+.dim-label {
+  font-size: 10px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dim-bar-wrap {
+  height: 4px;
+  background: var(--surface-2);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.dim-bar {
+  height: 100%;
+  border-radius: 2px;
+  transition: width 0.4s ease;
+}
+
+.dim-val {
+  font-size: 11px;
+  font-weight: 600;
+  text-align: right;
+}
+
+.raw-scores {
+  font-size: 10px;
+  color: var(--text-muted);
+  margin-top: 10px;
+  padding-top: 8px;
+  border-top: 1px solid var(--border);
+  font-family: var(--mono);
+  line-height: 1.5;
+}
+
 /* Info strip */
 .infostrip {
   position: absolute;

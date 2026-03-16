@@ -295,10 +295,104 @@ async function showPanel(d) {
   if (d.agentURI) addRow(identSec, "Manifest", "agent.json", d.agentURI);
   addRow(identSec, "Reviews", String(d.feedbackCount));
   addRow(identSec, "Reviewers", String(d.clientCount));
+
+  // Confidence indicator
+  var confidence = d.feedbackCount >= 5 ? "High" : d.feedbackCount >= 2 ? "Medium" : "Low";
+  var confColor = d.feedbackCount >= 5 ? "var(--green)" : d.feedbackCount >= 2 ? "var(--amber)" : "var(--red)";
+  var confRow = document.createElement("div");
+  confRow.className = "panel-row";
+  var confLabel = document.createElement("span");
+  confLabel.className = "panel-row-label";
+  confLabel.textContent = "Confidence";
+  confRow.appendChild(confLabel);
+  var confVal = document.createElement("span");
+  confVal.className = "panel-row-value";
+  confVal.style.color = confColor;
+  confVal.textContent = confidence + " (" + d.feedbackCount + " reviews)";
+  confRow.appendChild(confVal);
+  identSec.appendChild(confRow);
+
   content.appendChild(identSec);
 
-  // Feedback section (if agent)
+  // Score breakdown section (multi-dimensional + raw values)
   if (d.agentId && d.clientCount > 0) {
+    var breakSec = document.createElement("div");
+    breakSec.className = "panel-section";
+
+    var breakTitle = document.createElement("div");
+    breakTitle.className = "panel-section-title";
+    breakTitle.textContent = "Score Breakdown";
+    breakSec.appendChild(breakTitle);
+
+    // Read all feedback and bucket by tag2 (quality dimension)
+    var allScores = [];
+    var dimScores = {};
+    var feedbackItems = [];
+
+    try {
+      var rawClients2 = await reputationContract.getClients(d.agentId);
+      var clients2 = Array.from(rawClients2);
+      for (var client2 of clients2) {
+        var lastIdx2 = Number(await reputationContract.getLastIndex(d.agentId, client2));
+        for (var j = 0; j < lastIdx2; j++) {
+          var fb2 = await reputationContract.readFeedback(d.agentId, client2, j);
+          if (fb2[4]) continue; // revoked
+          var val = Number(fb2[0]);
+          var tag2val = fb2[3] || "general";
+          allScores.push(val);
+          if (!dimScores[tag2val]) dimScores[tag2val] = [];
+          dimScores[tag2val].push(val);
+          feedbackItems.push({ value: val, tag1: fb2[2], tag2: tag2val, client: client2 });
+        }
+      }
+    } catch (e) {}
+
+    // Dimension bars
+    var dims = Object.keys(dimScores);
+    if (dims.length > 0) {
+      for (var dim of dims) {
+        var dimVals = dimScores[dim];
+        var dimAvg = Math.round(dimVals.reduce(function(a, b) { return a + b; }, 0) / dimVals.length);
+
+        var dimRow = document.createElement("div");
+        dimRow.className = "dim-row";
+
+        var dimLabel = document.createElement("div");
+        dimLabel.className = "dim-label";
+        dimLabel.textContent = dim;
+        dimRow.appendChild(dimLabel);
+
+        var dimBarWrap = document.createElement("div");
+        dimBarWrap.className = "dim-bar-wrap";
+
+        var dimBar = document.createElement("div");
+        dimBar.className = "dim-bar";
+        dimBar.style.width = dimAvg + "%";
+        dimBar.style.background = dimAvg >= 70 ? "var(--green)" : dimAvg >= 40 ? "var(--amber)" : "var(--red)";
+        dimBarWrap.appendChild(dimBar);
+        dimRow.appendChild(dimBarWrap);
+
+        var dimVal = document.createElement("div");
+        dimVal.className = "dim-val";
+        dimVal.style.color = dimAvg >= 70 ? "var(--green)" : dimAvg >= 40 ? "var(--amber)" : "var(--red)";
+        dimVal.textContent = String(dimAvg);
+        dimRow.appendChild(dimVal);
+
+        breakSec.appendChild(dimRow);
+      }
+    }
+
+    // Raw scores
+    if (allScores.length > 0) {
+      var rawDiv = document.createElement("div");
+      rawDiv.className = "raw-scores";
+      rawDiv.textContent = "Raw: " + allScores.join(", ") + " \u2192 avg " + Math.round(allScores.reduce(function(a, b) { return a + b; }, 0) / allScores.length);
+      breakSec.appendChild(rawDiv);
+    }
+
+    content.appendChild(breakSec);
+
+    // Recent feedback section
     var fbSec = document.createElement("div");
     fbSec.className = "panel-section";
 
@@ -307,45 +401,36 @@ async function showPanel(d) {
     fbTitle.textContent = "Recent Feedback";
     fbSec.appendChild(fbTitle);
 
-    try {
-      var rawClients = await reputationContract.getClients(d.agentId);
-      var clients = Array.from(rawClients);
-      var shown = 0;
-      for (var client of clients) {
-        if (shown >= 5) break;
-        var lastIdx = Number(await reputationContract.getLastIndex(d.agentId, client));
-        for (var i = lastIdx - 1; i >= 0 && shown < 5; i--) {
-          var fb = await reputationContract.readFeedback(d.agentId, client, i);
-          if (fb[4]) continue; // revoked
+    var shown = 0;
+    for (var fi = feedbackItems.length - 1; fi >= 0 && shown < 5; fi--) {
+      var item = feedbackItems[fi];
 
-          var fbItem = document.createElement("div");
-          fbItem.className = "panel-feedback";
+      var fbItem = document.createElement("div");
+      fbItem.className = "panel-feedback";
 
-          var fbHead = document.createElement("div");
-          fbHead.className = "fb-header";
+      var fbHead = document.createElement("div");
+      fbHead.className = "fb-header";
 
-          var fbScore = document.createElement("span");
-          fbScore.className = "fb-score " + scoreClass(Number(fb[0]));
-          fbScore.textContent = String(Number(fb[0]));
-          fbHead.appendChild(fbScore);
+      var fbScore = document.createElement("span");
+      fbScore.className = "fb-score " + scoreClass(item.value);
+      fbScore.textContent = String(item.value);
+      fbHead.appendChild(fbScore);
 
-          var fbTags = document.createElement("span");
-          fbTags.className = "fb-tags";
-          fbTags.textContent = fb[2] + " / " + fb[3];
-          fbHead.appendChild(fbTags);
+      var fbTags = document.createElement("span");
+      fbTags.className = "fb-tags";
+      fbTags.textContent = item.tag1 + " / " + item.tag2;
+      fbHead.appendChild(fbTags);
 
-          fbItem.appendChild(fbHead);
+      fbItem.appendChild(fbHead);
 
-          var fbFrom = document.createElement("div");
-          fbFrom.className = "fb-from";
-          fbFrom.textContent = "from " + shortAddr(client);
-          fbItem.appendChild(fbFrom);
+      var fbFrom = document.createElement("div");
+      fbFrom.className = "fb-from";
+      fbFrom.textContent = "from " + shortAddr(item.client);
+      fbItem.appendChild(fbFrom);
 
-          fbSec.appendChild(fbItem);
-          shown++;
-        }
-      }
-    } catch (e) {}
+      fbSec.appendChild(fbItem);
+      shown++;
+    }
 
     content.appendChild(fbSec);
   }
