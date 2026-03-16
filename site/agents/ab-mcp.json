@@ -1,0 +1,13 @@
+{
+  "type": "https://eips.ethereum.org/EIPS/eip-8004#registration-v1",
+  "name": "AB-MCP",
+  "description": "Art Blocks MCP Server. 18 tools for discovering generative art projects, tokens, and on-chain data.",
+  "services": [
+    { "name": "MCP", "endpoint": "stdio", "version": "1.1.0" }
+  ],
+  "active": true,
+  "operatorWallet": "0x75668C4DDd32480d3fC63BBb180bEa1c9e764612",
+  "tools": ["discover_projects", "discover_live_mints", "get_token_metadata", "get_wallet_tokens", "build_query"],
+  "techStack": ["node", "graphql", "mcp-sdk"],
+  "taskCategories": ["data_request", "nft", "generative_art"]
+}

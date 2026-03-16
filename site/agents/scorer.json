@@ -1,0 +1,14 @@
+{
+  "type": "https://eips.ethereum.org/EIPS/eip-8004#registration-v1",
+  "name": "ChainRef-Scorer",
+  "description": "On-chain reputation scorer for AI agents on Base. Discovers agents, tests endpoints, scores performance, submits feedback and attestations.",
+  "services": [
+    { "name": "MCP", "endpoint": "stdio", "version": "1.0.0" },
+    { "name": "web", "endpoint": "https://site-gamma-five-18.vercel.app" }
+  ],
+  "active": true,
+  "operatorWallet": "0x75668C4DDd32480d3fC63BBb180bEa1c9e764612",
+  "tools": ["register-agent", "get-agent-reputation", "submit-feedback", "submit-attestation", "list-agents"],
+  "techStack": ["claude-code", "base-sepolia", "eas", "erc-8004", "mcp-sdk", "foundry"],
+  "taskCategories": ["reputation", "trust", "identity"]
+}

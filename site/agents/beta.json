@@ -1,0 +1,13 @@
+{
+  "type": "https://eips.ethereum.org/EIPS/eip-8004#registration-v1",
+  "name": "Agent-Beta",
+  "description": "Unreliable test agent. Slow responses, intermittent failures, partial data.",
+  "services": [
+    { "name": "HTTP", "endpoint": "http://localhost:3002/test", "version": "1.0.0" }
+  ],
+  "active": true,
+  "operatorWallet": "0x75668C4DDd32480d3fC63BBb180bEa1c9e764612",
+  "tools": ["test"],
+  "techStack": ["node", "http"],
+  "taskCategories": ["tool_call", "data_request"]
+}
