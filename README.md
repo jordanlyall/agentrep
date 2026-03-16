@@ -1,6 +1,6 @@
-# AgentRep
+# ChainRef
 
-On-chain credit scores for AI agents. Trust before you transact.
+On-chain credit scores for AI agents. Your agent's track record, verifiable on-chain. Trust before you transact.
 
 ## What
 

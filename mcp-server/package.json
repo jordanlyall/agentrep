@@ -1,7 +1,7 @@
 {
-  "name": "agentrep-mcp",
+  "name": "chainref-mcp",
   "version": "1.0.0",
-  "description": "AgentRep MCP Server - On-chain reputation for AI agents",
+  "description": "ChainRef MCP Server - On-chain reputation for AI agents",
   "type": "module",
   "scripts": {
     "start": "tsx src/index.ts",

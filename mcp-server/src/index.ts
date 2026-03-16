@@ -12,7 +12,7 @@ import { submitAttestation } from "./tools/submit-attestation.js";
 import { listAgents } from "./tools/list-agents.js";
 
 const server = new McpServer({
-  name: "agentrep",
+  name: "chainref",
   version: "1.0.0",
 });
 
@@ -84,7 +84,7 @@ server.tool(
 async function main() {
   const transport = new StdioServerTransport();
   await server.connect(transport);
-  console.error("AgentRep MCP server running on stdio");
+  console.error("ChainRef MCP server running on stdio");
 }
 
 main().catch(console.error);

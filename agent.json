@@ -1,6 +1,6 @@
 {
   "type": "https://eips.ethereum.org/EIPS/eip-8004#registration-v1",
-  "name": "AgentRep-Scorer",
+  "name": "ChainRef-Scorer",
   "description": "On-chain reputation scorer for AI agents on Base. Registers agents via ERC-8004 Identity Registry, collects feedback via ERC-8004 Reputation Registry, and creates EAS attestations.",
   "services": [
     { "name": "MCP", "endpoint": "stdio", "version": "1.0.0" },
