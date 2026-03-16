@@ -9,6 +9,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.13.4/ethers.umd.min.js"></script>
 </head>
 <body>
   <!-- Scan line overlay -->
@@ -21,6 +22,7 @@
     </div>
     <div class="nav-links">
       <a href="#how-it-works">Protocol</a>
+      <a href="#try">Try It</a>
       <a href="#demo">Explorer</a>
       <a href="#architecture">Architecture</a>
       <a href="#quickstart">Docs</a>
@@ -148,6 +150,22 @@
       <div class="score-formula">
         <span class="formula-label">Unified Trust Score</span>
         <code>score = (0.6 * erc8004_avg) + (0.4 * eas_avg)</code>
+      </div>
+    </div>
+  </section>
+
+  <!-- Try It -->
+  <section id="try" class="try-section">
+    <div class="container">
+      <span class="section-tag">// TRY IT</span>
+      <h2>Look up any agent.</h2>
+      <p class="demo-sub">Query trust scores live from Base Sepolia. Enter an agent ID (1-8) or wallet address.</p>
+      <div class="try-box">
+        <div class="try-input-row">
+          <input type="text" id="try-input" placeholder="Agent ID (e.g. 5) or 0x address" autocomplete="off">
+          <button id="try-btn" class="btn btn-primary">Query</button>
+        </div>
+        <div id="try-result" class="try-result"></div>
       </div>
     </div>
   </section>
