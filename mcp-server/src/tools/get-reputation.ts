@@ -18,7 +18,12 @@ export async function getReputation(agentIdOrAddress: string) {
     agentId = Number((events[0] as ethers.EventLog).args[0]);
   } else {
     agentId = parseInt(agentIdOrAddress);
-    agentAddress = await identityRegistry.ownerOf(agentId);
+    if (isNaN(agentId) || agentId < 1) throw new Error("Invalid agent ID: " + agentIdOrAddress);
+    try {
+      agentAddress = await identityRegistry.ownerOf(agentId);
+    } catch {
+      return { error: "agent_not_found", message: "No agent registered with ID " + agentId };
+    }
   }
 
   const rawClients = await reputationRegistry.getClients(agentId);
