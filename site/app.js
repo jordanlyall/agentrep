@@ -349,6 +349,50 @@ async function showPanel(d) {
 
     content.appendChild(fbSec);
   }
+
+  // Badge embed section
+  if (d.agentId) {
+    var badgeSec = document.createElement("div");
+    badgeSec.className = "panel-section";
+
+    var badgeTitle = document.createElement("div");
+    badgeTitle.className = "panel-section-title";
+    badgeTitle.textContent = "Trust Badge";
+    badgeSec.appendChild(badgeTitle);
+
+    var preview = document.createElement("div");
+    preview.className = "badge-preview";
+
+    var svgStr = generateBadgeSVG(d.name, d.score);
+    var svgContainer = document.createElement("div");
+    svgContainer.className = "badge-svg";
+
+    var parser = new DOMParser();
+    var svgDoc = parser.parseFromString(svgStr, "image/svg+xml");
+    svgContainer.appendChild(svgDoc.documentElement);
+    preview.appendChild(svgContainer);
+
+    var embedLabel = document.createElement("div");
+    embedLabel.className = "badge-preview-label";
+    embedLabel.textContent = "Embed in README";
+    preview.appendChild(embedLabel);
+
+    var slug = d.name.toLowerCase().replace(/[^a-z0-9]/g, "-");
+    var embedCode = document.createElement("div");
+    embedCode.className = "badge-embed-code";
+    embedCode.textContent = "![ChainRef](https://chainref.ai/badge/" + slug + ".svg)";
+    embedCode.title = "Click to copy";
+    embedCode.addEventListener("click", function() {
+      navigator.clipboard.writeText(this.textContent);
+      this.textContent = "Copied!";
+      var self = this;
+      setTimeout(function() { self.textContent = "![ChainRef](https://chainref.ai/badge/" + slug + ".svg)"; }, 1500);
+    });
+    preview.appendChild(embedCode);
+
+    badgeSec.appendChild(preview);
+    content.appendChild(badgeSec);
+  }
 }
 
 function addRow(parent, label, value, link) {
@@ -375,24 +419,134 @@ function addRow(parent, label, value, link) {
   parent.appendChild(row);
 }
 
-// --- Query input ---
+// --- Search (works by name, ID, or address) ---
+function searchAgents(query) {
+  var q = query.toLowerCase().trim();
+  if (!q) return [];
+
+  // Exact ID match
+  var id = parseInt(q);
+  if (!isNaN(id)) {
+    var exact = agents.find(function(a) { return a.agentId === id; });
+    if (exact) return [exact];
+  }
+
+  // Address match
+  if (q.startsWith("0x")) {
+    var addrMatch = agents.find(function(a) { return a.owner.toLowerCase() === q; });
+    if (addrMatch) return [addrMatch];
+  }
+
+  // Name fuzzy match
+  return agents.filter(function(a) {
+    return a.name.toLowerCase().indexOf(q) !== -1;
+  }).sort(function(a, b) {
+    // Prefer starts-with over contains
+    var aStarts = a.name.toLowerCase().indexOf(q) === 0 ? 0 : 1;
+    var bStarts = b.name.toLowerCase().indexOf(q) === 0 ? 0 : 1;
+    return aStarts - bStarts;
+  }).slice(0, 5);
+}
+
+// Top bar query
 document.getElementById("query-input").addEventListener("keydown", function(e) {
   if (e.key !== "Enter") return;
-  var val = this.value.trim();
-  if (!val) return;
-
-  var match;
-  if (val.startsWith("0x")) {
-    match = agents.find(function(a) { return a.owner.toLowerCase() === val.toLowerCase(); });
-  } else {
-    var id = parseInt(val);
-    match = agents.find(function(a) { return a.agentId === id; });
-  }
-
-  if (match) {
-    showPanel(match);
-  }
+  var results = searchAgents(this.value);
+  if (results.length > 0) showPanel(results[0]);
 });
+
+// --- Onramp ---
+var onrampEl = document.getElementById("onramp");
+var onrampSearch = document.getElementById("onramp-search");
+
+function dismissOnramp() {
+  if (!onrampEl) return;
+  onrampEl.classList.add("dismissed");
+  setTimeout(function() { onrampEl.remove(); }, 400);
+}
+
+if (document.getElementById("onramp-skip")) {
+  document.getElementById("onramp-skip").addEventListener("click", dismissOnramp);
+}
+
+if (onrampSearch) {
+  var resultsContainer = null;
+
+  onrampSearch.addEventListener("input", function() {
+    var q = this.value.trim();
+    if (!resultsContainer) {
+      resultsContainer = document.createElement("div");
+      resultsContainer.className = "onramp-results";
+      this.parentNode.appendChild(resultsContainer);
+    }
+
+    resultsContainer.replaceChildren();
+    if (q.length < 2) return;
+
+    var results = searchAgents(q);
+    for (var r of results) {
+      var item = document.createElement("div");
+      item.className = "onramp-result";
+      item.setAttribute("data-agent-id", r.agentId || "");
+
+      var scoreBadge = document.createElement("div");
+      scoreBadge.className = "onramp-result-score " + scoreClass(r.score);
+      scoreBadge.textContent = r.score !== null ? String(r.score) : "?";
+      item.appendChild(scoreBadge);
+
+      var info = document.createElement("div");
+      var name = document.createElement("div");
+      name.className = "onramp-result-name";
+      name.textContent = r.name;
+      info.appendChild(name);
+
+      var type = document.createElement("div");
+      type.className = "onramp-result-type";
+      type.textContent = (r.feedbackCount || 0) + " reviews";
+      info.appendChild(type);
+
+      item.appendChild(info);
+
+      (function(agent) {
+        item.addEventListener("click", function() {
+          dismissOnramp();
+          setTimeout(function() { showPanel(agent); }, 500);
+        });
+      })(r);
+
+      resultsContainer.appendChild(item);
+    }
+  });
+
+  onrampSearch.addEventListener("keydown", function(e) {
+    if (e.key === "Enter") {
+      var results = searchAgents(this.value);
+      if (results.length > 0) {
+        dismissOnramp();
+        setTimeout(function() { showPanel(results[0]); }, 500);
+      }
+    }
+    if (e.key === "Escape") dismissOnramp();
+  });
+}
+
+// --- Badge generator ---
+function generateBadgeSVG(name, score) {
+  var color = score === null ? "#555" : score >= 70 ? "#34d399" : score >= 40 ? "#f0c040" : "#f87171";
+  var label = "chainref";
+  var value = score !== null ? String(score) : "?";
+  var labelWidth = label.length * 7 + 12;
+  var valueWidth = value.length * 7 + 12;
+  var totalWidth = labelWidth + valueWidth;
+
+  return '<svg xmlns="http://www.w3.org/2000/svg" width="' + totalWidth + '" height="20">' +
+    '<rect width="' + labelWidth + '" height="20" fill="#333" rx="3"/>' +
+    '<rect x="' + labelWidth + '" width="' + valueWidth + '" height="20" fill="' + color + '" rx="3"/>' +
+    '<rect x="' + labelWidth + '" width="4" height="20" fill="' + color + '"/>' +
+    '<text x="' + (labelWidth / 2) + '" y="14" fill="#fff" font-family="monospace" font-size="11" text-anchor="middle">' + label + '</text>' +
+    '<text x="' + (labelWidth + valueWidth / 2) + '" y="14" fill="#fff" font-family="monospace" font-size="11" font-weight="bold" text-anchor="middle">' + value + '</text>' +
+    '</svg>';
+}
 
 // --- Context card toggle ---
 document.getElementById("context-toggle").addEventListener("click", function() {

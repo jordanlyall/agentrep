@@ -34,6 +34,18 @@
     </div>
   </header>
 
+  <!-- First-visit onramp -->
+  <div id="onramp" class="onramp">
+    <div class="onramp-content">
+      <div class="onramp-title">Before you call an AI tool,<br>check its trust score.</div>
+      <div class="onramp-sub">ChainRef is a live reputation network for MCP servers, agents, and oracles. Every score is verified on-chain.</div>
+      <div class="onramp-actions">
+        <input type="text" id="onramp-search" placeholder="Search: GitHub MCP, Devin, Brave Search..." autocomplete="off" spellcheck="false">
+        <button id="onramp-skip" class="onramp-skip">Explore the network</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Main canvas: the trust graph IS the page -->
   <main class="viewport">
     <svg id="graph"></svg>
@@ -49,6 +61,8 @@
       <button id="panel-close">&times;</button>
       <div id="panel-content"></div>
     </aside>
+
+    <!-- Badge preview (shown in detail panel) -->
 
     <!-- Bottom info strip -->
     <div class="infostrip">
